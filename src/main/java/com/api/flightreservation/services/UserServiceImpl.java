@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService{
         try {
             User userDetails = userRepository.findByEmail(loginDetails.getEmail());
             if(userDetails.getPassword().equals(loginDetails.getPassword())){
-                return "Hare Krishna You are Welcome you have logged in successfully";
+                return "You are Welcome you have logged in successfully";
             }
             return "Incorrect Password Please Provide Correct Password";
         } catch (Exception exception){

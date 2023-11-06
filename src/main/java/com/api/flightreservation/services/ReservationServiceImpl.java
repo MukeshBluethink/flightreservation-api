@@ -10,27 +10,30 @@ import com.api.flightreservation.repos.ReservationRepository;
 import com.api.flightreservation.util.EmailUtil;
 import com.api.flightreservation.util.PDFGenerator;
 import com.itextpdf.text.DocumentException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
-import java.util.Optional;
+
 @Service
-public class ReservationServiceImpl implements ReservationService{
-    @Autowired
+public class ReservationServiceImpl implements ReservationService {
     FlightService flightService;
-    @Autowired
     ReservationRepository reservationRepository;
-    @Autowired
     PassengerRepository passengerRepository;
-    @Autowired
     PDFGenerator pdfGenerator;
-    @Autowired
     EmailUtil emailUtil;
+
+    public ReservationServiceImpl(FlightService flightService, ReservationRepository reservationRepository, PassengerRepository passengerRepository, PDFGenerator pdfGenerator, EmailUtil emailUtil) {
+        this.flightService = flightService;
+        this.reservationRepository = reservationRepository;
+        this.passengerRepository = passengerRepository;
+        this.pdfGenerator = pdfGenerator;
+        this.emailUtil = emailUtil;
+    }
+
     @Override
-    public Reservation BookFlight(ReservationRequest reservationRequest) {
+    public Reservation bookFlight(ReservationRequest reservationRequest) {
         Long flightId = reservationRequest.getFlightId();
-        Flight flight = flightService.getFlightById(flightId).orElseThrow(()-> new ResourceNotFoundException("Flight not found with id " + flightId));
+        Flight flight = flightService.getFlightById(flightId).orElseThrow(() -> new ResourceNotFoundException("Flight not found with id " + flightId));
 
         Passenger passenger = new Passenger();
         passenger.setFirstName(reservationRequest.getPassengerFirstName());
@@ -45,15 +48,15 @@ public class ReservationServiceImpl implements ReservationService{
         reservation.setCheckIn(false);
 
         Reservation savedReservation = reservationRepository.save(reservation);
-        String filePath = "C:/Users/mukes/Desktop/reservationdetails/Reservation Details"+savedReservation.getId()+".pdf";
+        String filePath = "C:/Users/mukes/Desktop/reservationdetails/Reservation Details" + savedReservation.getId() + ".pdf";
         try {
-            pdfGenerator.generateItinerary(savedReservation,filePath);
+            pdfGenerator.generateItinerary(savedReservation, filePath);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (DocumentException e) {
             throw new RuntimeException(e);
         }
-        emailUtil.sendItinerary("mukesh@bluethink.in",filePath);
+        emailUtil.sendItinerary("mukesh@bluethink.in", filePath);
         return savedReservation;
     }
 }

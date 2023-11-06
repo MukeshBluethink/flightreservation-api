@@ -4,5 +4,5 @@ import com.api.flightreservation.dto.ReservationRequest;
 import com.api.flightreservation.entities.Reservation;
 
 public interface ReservationService {
-    public Reservation BookFlight(ReservationRequest reservationRequest);
+    public Reservation bookFlight(ReservationRequest reservationRequest);
 }

@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+
 @Component
 public class PDFGenerator {
     public void generateItinerary(Reservation reservation, String filePath) throws FileNotFoundException, DocumentException {
         Document document = new Document();
-        PdfWriter.getInstance(document,new FileOutputStream(filePath));
+        PdfWriter.getInstance(document, new FileOutputStream(filePath));
         document.open();
         document.add(generateTable(reservation));
         document.close();
